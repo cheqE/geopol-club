@@ -478,7 +478,8 @@
 <script>
   /* Maps each size to its Shopify variant ID, so Check Out can hand off to
      real Shopify checkout via the cart permalink pattern:
-     https://{shop}/cart/{variantId}:{qty},{variantId}:{qty}/checkout
+     https://{shop}/cart/{variantId}:{qty},{variantId}:{qty}
+     (no trailing /checkout — the permalink already goes straight to checkout)
      No storefront token needed — this is a plain URL redirect. */
   const SHOPIFY_DOMAIN = 'ke54kb-uw.myshopify.com';
   const SIZE_VARIANT_MAP = {
@@ -494,7 +495,7 @@
       .map(item => `${SIZE_VARIANT_MAP[item.size]}:${item.qty}`)
       .join(',');
     if(!lineItems) return;
-    window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems}/checkout`;
+    window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems}`;
   }
 
   const CART_STORAGE_KEY = 'geopolCart';
