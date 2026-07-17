@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — GEOPOL.CLUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff;
+    --fg:#000;
+    --muted:#6f6f6f;
+    --line:#000;
+    --navy:#16162e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.02em;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ---- Header ---- */
+  header{
+    padding:32px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:24px;
+    background:none;
+    border:none;
+    padding:6px 0;
+    cursor:pointer;
+  }
+  .menu-toggle span{
+    display:block;
+    width:100%;
+    height:1.5px;
+    background:#0a0a0a;
+  }
+
+  .nav{
+    display:flex;
+    gap:28px;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .nav a{opacity:.9;}
+  .nav a:hover{opacity:1;text-decoration:underline;}
+
+  .wordmark{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:14px;
+    font-weight:400;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:#0a0a0a;
+  }
+
+  .wordmark-wrap{
+    position:relative;
+    display:inline-block;
+  }
+  .wordmark-cart-badge{
+    position:absolute;
+    left:-11px;
+    bottom:-7px;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#0a0a0a;
+    color:#fff;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:8.5px;
+    font-weight:800;
+    letter-spacing:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:5;
+  }
+  .wordmark-cart-badge.visible{display:flex;}
+
+  /* ---- Nav drawer ---- */
+  .nav-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:1150;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .nav-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .nav-drawer{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:380px;
+    max-width:66vw;
+    background:#fff;
+    z-index:1151;
+    transform:translateX(-100%);
+    transition:transform .35s ease;
+    box-shadow:10px 0 30px rgba(0,0,0,.2);
+  }
+  .nav-drawer.open{
+    transform:translateX(0);
+  }
+  .nav-drawer-header{
+    padding:28px 28px 0;
+  }
+  .nav-drawer-close{
+    cursor:pointer;
+    font-size:26px;
+    font-weight:300;
+    line-height:1;
+    color:#0a0a0a;
+  }
+  .nav-drawer-close:hover{opacity:.6;}
+  .nav-drawer-links{
+    display:flex;
+    flex-direction:column;
+    gap:34px;
+    padding:56px 28px;
+  }
+  .nav-drawer-links a{
+    font-size:30px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    color:#0a0a0a;
+  }
+  .nav-drawer-links a:hover{opacity:.6;}
+
+  /* ---- Cart page ---- */
+  .cart-page{
+    max-width:1360px;
+    margin:0 auto;
+    padding:10px 40px 100px;
+  }
+  .cart-page-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+    padding:30px 0 34px;
+  }
+  .cart-page-title{
+    font-family:'Oswald','Helvetica Neue',Arial,sans-serif;
+    font-size:44px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    color:var(--navy);
+  }
+  .continue-shopping{
+    font-family:'Oswald','Helvetica Neue',Arial,sans-serif;
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--navy);
+  }
+  .continue-shopping:hover{text-decoration:underline;}
+
+  .cart-table-head{
+    display:grid;
+    grid-template-columns:1fr 260px 130px;
+    gap:24px;
+    padding-bottom:14px;
+    border-bottom:1px solid #e0e0e0;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--muted);
+  }
+  .cart-table-head .th-total{text-align:right;}
+
+  .cart-table-row{
+    display:grid;
+    grid-template-columns:1fr 260px 130px;
+    gap:24px;
+    align-items:flex-start;
+    padding:32px 0;
+    border-bottom:1px solid #eee;
+  }
+  .cart-row-product{
+    display:flex;
+    gap:22px;
+    align-items:flex-start;
+  }
+  .cart-row-product img{
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    object-position:top;
+    background:#f2f2f2;
+    border-radius:8px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    flex-shrink:0;
+  }
+  .cart-row-title{
+    font-family:'Oswald','Helvetica Neue',Arial,sans-serif;
+    font-size:16px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    margin-bottom:8px;
+    color:var(--navy);
+  }
+  .cart-row-price{
+    font-size:13px;
+    margin-bottom:8px;
+    color:var(--navy);
+  }
+  .cart-row-size{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--navy);
+  }
+  .cart-row-qty{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding-top:2px;
+  }
+  .qty-stepper{
+    display:flex;
+    align-items:center;
+    border:1.5px solid var(--navy);
+    border-radius:2px;
+    height:40px;
+    width:170px;
+  }
+  .qty-btn{
+    flex:0 0 40px;
+    height:100%;
+    background:none;
+    border:none;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--navy);
+    cursor:pointer;
+  }
+  .qty-value{
+    flex:1;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    border-left:1px solid var(--navy);
+    border-right:1px solid var(--navy);
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .cart-row-remove{
+    cursor:pointer;
+    color:var(--navy);
+    opacity:.8;
+  }
+  .cart-row-remove:hover{opacity:1;}
+  .cart-row-remove svg{display:block;width:18px;height:18px;}
+  .cart-row-total{
+    text-align:right;
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy);
+    padding-top:6px;
+  }
+
+  .cart-empty{
+    padding:100px 0;
+    text-align:center;
+  }
+  .cart-empty p{
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted);
+    margin-bottom:18px;
+  }
+  .cart-empty a{
+    display:inline-block;
+    padding:14px 30px;
+    background:var(--navy);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .cart-empty a:hover{background:#26264a;}
+
+  .cart-summary{
+    max-width:360px;
+    margin-left:auto;
+    padding-top:36px;
+  }
+  .cart-summary-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    color:var(--navy);
+  }
+  .cart-summary-note{
+    font-size:11px;
+    font-weight:600;
+    color:var(--navy);
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    margin-bottom:18px;
+  }
+  .cart-summary-note a{
+    text-decoration:underline;
+  }
+  .cart-summary-note a:hover{opacity:.7;}
+  .cart-checkout-btn{
+    width:100%;
+    padding:16px;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    border-radius:0;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .cart-checkout-btn:hover{background:#26264a;}
+
+  .cart-legal-note{
+    font-size:10.5px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    line-height:1.6;
+    margin-top:16px;
+  }
+  .cart-legal-note a{
+    color:var(--navy);
+    text-decoration:underline;
+  }
+  .cart-legal-note a:hover{opacity:.7;}
+
+  footer{
+    padding:30px 40px;
+    background:#0a0a0a;
+    border-top:1px solid #1a1a1a;
+    text-align:center;
+    font-size:10px;
+    color:#8a8a80;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+
+  @media (max-width:640px){
+    header{padding:18px 20px;}
+    .nav{display:none;}
+    .menu-toggle{display:flex;}
+    .wordmark{font-size:11px;letter-spacing:.16em;}
+    .wordmark-cart-badge{width:13px;height:13px;font-size:7.5px;left:-8px;bottom:-5px;}
+    .nav-drawer{max-width:72vw;}
+    .nav-drawer-header{padding:20px 22px 0;}
+    .nav-drawer-close{font-size:22px;}
+    .nav-drawer-links{gap:26px;padding:44px 22px;}
+    .nav-drawer-links a{font-size:24px;}
+  }
+
+  @media (max-width:760px){
+    .cart-page{padding:10px 20px 60px;}
+    .cart-page-header{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:8px;
+      padding:22px 0 26px;
+    }
+    .cart-page-title{font-size:30px;}
+    .cart-table-head{display:none;}
+    .cart-table-row{
+      grid-template-columns:1fr;
+      gap:16px;
+      padding:26px 0;
+    }
+    .cart-row-qty{justify-content:space-between;}
+    .cart-row-total{text-align:left;font-size:15px;}
+    .cart-summary{max-width:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav">
+    <a href="product-page.html">Shop</a>
+    <a href="manifesto.html">Manifesto</a>
+  </nav>
+  <span class="wordmark-wrap">
+    <span class="wordmark">GEOPOL.CLUB</span>
+    <span class="wordmark-cart-badge" id="wordmarkCartBadge">0</span>
+  </span>
+</header>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="nav-drawer-close" id="navDrawerClose">&times;</span>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="product-page.html">Shop</a>
+    <a href="manifesto.html">Manifesto</a>
+  </nav>
+</div>
+
+<main class="cart-page">
+  <div class="cart-page-header">
+    <h1 class="cart-page-title">Your Cart</h1>
+    <a href="product-page.html" class="continue-shopping" id="continueShoppingLink">Continue Shopping</a>
+  </div>
+
+  <div id="cartTableWrap">
+    <div class="cart-table-head">
+      <span>Product</span>
+      <span>Quantity</span>
+      <span class="th-total">Total</span>
+    </div>
+    <div id="cartTableBody"></div>
+  </div>
+
+  <div class="cart-summary" id="cartSummary">
+    <div class="cart-summary-row"><span>Subtotal</span><span id="cartPageSubtotal">$0.00 AUD</span></div>
+    <div class="cart-summary-note">Tax included. <a href="shipping-policy.html">Shipping</a> calculated at checkout.</div>
+    <button class="cart-checkout-btn" type="button">Check Out</button>
+    <div class="cart-legal-note">By placing your order you agree to our <a href="shipping-policy.html">Terms and Conditions</a> and <a href="shipping-policy.html">Privacy Policy</a>.</div>
+  </div>
+
+  <div class="cart-empty" id="cartEmpty" style="display:none;">
+    <p>Your cart is empty</p>
+    <a href="product-page.html">Continue Shopping</a>
+  </div>
+</main>
+
+<footer>My Store &copy; 2026</footer>
+
+<script>
+  /* Maps each size to its Shopify variant ID, so Check Out can hand off to
+     real Shopify checkout via the cart permalink pattern:
+     https://{shop}/cart/{variantId}:{qty},{variantId}:{qty}/checkout
+     No storefront token needed — this is a plain URL redirect. */
+  const SHOPIFY_DOMAIN = 'ke54kb-uw.myshopify.com';
+  const SIZE_VARIANT_MAP = {
+    'S': '51980106170656',
+    'M': '51980106203424',
+    'L': '51980106236192',
+    'XL': '51980106268960',
+    '2XL': '51980106301728'
+  };
+  function goToShopifyCheckout(items){
+    const lineItems = items
+      .filter(item => SIZE_VARIANT_MAP[item.size])
+      .map(item => `${SIZE_VARIANT_MAP[item.size]}:${item.qty}`)
+      .join(',');
+    if(!lineItems) return;
+    window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems}/checkout`;
+  }
+
+  const CART_STORAGE_KEY = 'geopolCart';
+
+  function loadCart(){
+    /* localStorage isn't reliably shared between local files (esp. file://
+       in Safari), so the product page passes the cart in the URL when it
+       links here. Prefer that; fall back to localStorage otherwise. */
+    const fromUrl = new URLSearchParams(location.search).get('cart');
+    if(fromUrl){
+      try {
+        const parsed = JSON.parse(fromUrl);
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(parsed));
+        return parsed;
+      } catch(e){ /* fall through to localStorage */ }
+    }
+    try { return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'); } catch(e){ return []; }
+  }
+  function saveCart(){
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    const url = new URL(location.href);
+    url.searchParams.set('cart', JSON.stringify(cart));
+    history.replaceState(null, '', url);
+  }
+
+  let cart = loadCart();
+
+  const tableWrap = document.getElementById('cartTableWrap');
+  const tableBody = document.getElementById('cartTableBody');
+  const summary = document.getElementById('cartSummary');
+  const empty = document.getElementById('cartEmpty');
+  const subtotalEl = document.getElementById('cartPageSubtotal');
+  const wordmarkCartBadge = document.getElementById('wordmarkCartBadge');
+  const continueShoppingLink = document.getElementById('continueShoppingLink');
+
+  function updateBadge(){
+    if(!wordmarkCartBadge) return;
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    wordmarkCartBadge.textContent = totalItems;
+    wordmarkCartBadge.classList.toggle('visible', totalItems > 0);
+  }
+
+  function render(){
+    updateBadge();
+    if(cart.length === 0){
+      tableWrap.style.display = 'none';
+      summary.style.display = 'none';
+      empty.style.display = 'block';
+      if(continueShoppingLink) continueShoppingLink.style.display = 'none';
+      return;
+    }
+    if(continueShoppingLink) continueShoppingLink.style.display = '';
+    tableWrap.style.display = '';
+    summary.style.display = '';
+    empty.style.display = 'none';
+
+    tableBody.innerHTML = cart.map((item, i) => `
+      <div class="cart-table-row">
+        <div class="cart-row-product">
+          <img src="${item.img}" alt="${item.title}">
+          <div>
+            <div class="cart-row-title">${item.title}</div>
+            <div class="cart-row-price">$${item.price.toFixed(2)}</div>
+            <div class="cart-row-size">Size: ${item.size}</div>
+          </div>
+        </div>
+        <div class="cart-row-qty">
+          <div class="qty-stepper">
+            <button type="button" class="qty-btn" data-action="dec" data-index="${i}">&minus;</button>
+            <span class="qty-value">${item.qty}</span>
+            <button type="button" class="qty-btn" data-action="inc" data-index="${i}">&#43;</button>
+          </div>
+          <span class="cart-row-remove" data-index="${i}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M18 7l-.8 12.2a2 2 0 0 1-2 1.8H8.8a2 2 0 0 1-2-1.8L6 7"/></svg>
+          </span>
+        </div>
+        <div class="cart-row-total">$${(item.price * item.qty).toFixed(2)}</div>
+      </div>
+    `).join('');
+
+    tableBody.querySelectorAll('.qty-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = parseInt(btn.dataset.index, 10);
+        if(btn.dataset.action === 'inc') cart[idx].qty += 1;
+        if(btn.dataset.action === 'dec') cart[idx].qty = Math.max(1, cart[idx].qty - 1);
+        saveCart();
+        render();
+      });
+    });
+    tableBody.querySelectorAll('.cart-row-remove').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        cart.splice(parseInt(el.dataset.index, 10), 1);
+        saveCart();
+        render();
+      });
+    });
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    subtotalEl.textContent = `$${subtotal.toFixed(2)} AUD`;
+    saveCart();
+  }
+
+  render();
+
+  document.querySelector('.cart-checkout-btn').addEventListener('click', ()=>{
+    goToShopifyCheckout(cart);
+  });
+
+  /* ---- Nav drawer ---- */
+  const navOverlay = document.getElementById('navOverlay');
+  const navDrawer = document.getElementById('navDrawer');
+  function openNav(){
+    navDrawer.classList.add('open');
+    navOverlay.classList.add('open');
+  }
+  function closeNav(){
+    navDrawer.classList.remove('open');
+    navOverlay.classList.remove('open');
+  }
+  document.getElementById('menuToggle').addEventListener('click', openNav);
+  document.getElementById('navDrawerClose').addEventListener('click', closeNav);
+  navOverlay.addEventListener('click', closeNav);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeNav();
+  });
+</script>
+
+</body>
+</html>

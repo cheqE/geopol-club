@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIPPING POLICY — GEOPOL.CLUB</title>
+<style>
+  :root{
+    --bg:#fff;
+    --fg:#000;
+    --muted:#6f6f6f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.02em;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  header{
+    padding:32px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:24px;
+    background:none;
+    border:none;
+    padding:6px 0;
+    cursor:pointer;
+  }
+  .nav{
+    display:flex;
+    gap:28px;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .nav a{opacity:.9;}
+  .nav a:hover{opacity:1;text-decoration:underline;}
+  .nav a.active{text-decoration:underline;}
+  .menu-toggle span{
+    display:block;
+    width:100%;
+    height:1.5px;
+    background:#0a0a0a;
+  }
+
+  .wordmark{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:14px;
+    font-weight:400;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:#0a0a0a;
+    transition:opacity .15s;
+  }
+  .wordmark-wrap:hover .wordmark{opacity:.6;}
+
+  .wordmark-wrap{
+    position:relative;
+    display:inline-block;
+  }
+  .wordmark-cart-badge{
+    position:absolute;
+    left:-11px;
+    bottom:-7px;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#0a0a0a;
+    color:#fff;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:8.5px;
+    font-weight:800;
+    letter-spacing:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:5;
+  }
+  .wordmark-cart-badge.visible{display:flex;}
+
+  /* ---- Nav drawer ---- */
+  .nav-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:1150;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .nav-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .nav-drawer{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:380px;
+    max-width:66vw;
+    background:#fff;
+    z-index:1151;
+    transform:translateX(-100%);
+    transition:transform .35s ease;
+    box-shadow:10px 0 30px rgba(0,0,0,.2);
+  }
+  .nav-drawer.open{
+    transform:translateX(0);
+  }
+  .nav-drawer-header{
+    padding:28px 28px 0;
+  }
+  .nav-drawer-close{
+    cursor:pointer;
+    font-size:26px;
+    font-weight:300;
+    line-height:1;
+    color:#0a0a0a;
+  }
+  .nav-drawer-close:hover{opacity:.6;}
+  .nav-drawer-links{
+    display:flex;
+    flex-direction:column;
+    gap:34px;
+    padding:56px 28px;
+  }
+  .nav-drawer-links a{
+    font-size:30px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    color:#0a0a0a;
+  }
+  .nav-drawer-links a:hover{opacity:.6;}
+
+  main{
+    max-width:680px;
+    margin:0 auto;
+    padding:20px 40px 100px;
+  }
+  .page-title{
+    font-size:26px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:40px;
+  }
+  .policy-section{
+    margin-bottom:36px;
+  }
+  .policy-section h2{
+    font-size:13px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:14px;
+  }
+  .policy-section p{
+    font-size:13.5px;
+    line-height:1.75;
+    color:#222;
+    margin-bottom:14px;
+    max-width:620px;
+  }
+  .policy-section p:last-child{margin-bottom:0;}
+
+  footer{
+    padding:30px 40px;
+    background:#0a0a0a;
+    border-top:1px solid #1a1a1a;
+    text-align:center;
+    font-size:10px;
+    color:#8a8a80;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+
+  @media (max-width:640px){
+    header{padding:18px 20px;}
+    .nav{display:none;}
+    .menu-toggle{display:flex;}
+    .wordmark{font-size:11px;letter-spacing:.16em;}
+    .wordmark-cart-badge{width:13px;height:13px;font-size:7.5px;left:-8px;bottom:-5px;}
+    .nav-drawer{max-width:72vw;}
+    .nav-drawer-header{padding:20px 22px 0;}
+    .nav-drawer-close{font-size:22px;}
+    .nav-drawer-links{gap:26px;padding:44px 22px;}
+    .nav-drawer-links a{font-size:24px;}
+
+    main{padding:8px 20px 70px;}
+    .page-title{font-size:21px;margin-bottom:30px;}
+    .policy-section{margin-bottom:30px;}
+    .policy-section p{font-size:13px;}
+
+    footer{padding:22px 20px;font-size:9px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav">
+    <a href="product-page.html">Shop</a>
+    <a href="manifesto.html">Manifesto</a>
+  </nav>
+  <a href="cart-page.html" class="wordmark-wrap" aria-label="View cart">
+    <span class="wordmark">GEOPOL.CLUB</span>
+    <span class="wordmark-cart-badge" id="wordmarkCartBadge">0</span>
+  </a>
+</header>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="nav-drawer-close" id="navDrawerClose">&times;</span>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="product-page.html">Shop</a>
+    <a href="manifesto.html">Manifesto</a>
+  </nav>
+</div>
+
+<main>
+  <div class="page-title">Shipping Policy</div>
+
+  <div class="policy-section">
+    <h2>Shipping</h2>
+    <p>Once your order is shipped, you will receive a tracking number via email. Please allow up to 4 weeks for your order to ship.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2>All Sales Are Final</h2>
+  </div>
+
+  <div class="policy-section">
+    <h2>International Shipping / Customs</h2>
+    <p>You are responsible for all duties and taxes on your order. If you refuse a shipment from GEOPOL.CLUB, you are responsible for the original shipping charges, any import fees, duties and/or taxes that are incurred on the package, and the cost of returning the package to GEOPOL.CLUB. This amount will be deducted from your merchandise store credit. In the instance that the return fee exceeds the amount of the merchandise plus shipping costs, the package will be abandoned and you will not be issued a credit.</p>
+    <p>Depending on your country you will have the option to pre-pay your duties and taxes at checkout. This means you will not have to pay these fees when your order arrives, and we guarantee that you will not be required to pay additional costs upon delivery. Duties and taxes are calculated based on the items ordered, your shipment destination and the value of your purchase, and are added to your order total in the shopping cart. Duties and taxes are nonrefundable. These duties &amp; taxes are beyond our control as they are set by the Customs Authority of the destination country and depend on a number of factors, such as: country of origin of the purchased product, local VAT rates, &amp; local import taxes.</p>
+    <p>Deliveries to some countries also have the option at checkout to not pay for the duties, taxes, and fees upfront. Instead, you agree to pay all applicable fees upon delivery. We cannot guarantee the cost of the fees upon delivery, as the fees are calculated by your local customs authority. It will be your responsibility to pay these charges if and when asked to by your local authorities.</p>
+  </div>
+</main>
+
+<footer>GEOPOL.CLUB &copy; 2026</footer>
+
+<script>
+  /* ---- Cart badge (read-only) ---- */
+  const CART_STORAGE_KEY = 'geopolCart';
+  try {
+    const cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    const badge = document.getElementById('wordmarkCartBadge');
+    if(badge){
+      badge.textContent = totalItems;
+      badge.classList.toggle('visible', totalItems > 0);
+    }
+  } catch(e){}
+
+  /* ---- Nav drawer ---- */
+  const navOverlay = document.getElementById('navOverlay');
+  const navDrawer = document.getElementById('navDrawer');
+  function openNav(){
+    navDrawer.classList.add('open');
+    navOverlay.classList.add('open');
+  }
+  function closeNav(){
+    navDrawer.classList.remove('open');
+    navOverlay.classList.remove('open');
+  }
+  document.getElementById('menuToggle').addEventListener('click', openNav);
+  document.getElementById('navDrawerClose').addEventListener('click', closeNav);
+  navOverlay.addEventListener('click', closeNav);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeNav();
+  });
+</script>
+
+</body>
+</html>

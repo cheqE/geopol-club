@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CUI BONO T-SHIRT — MY STORE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff;
+    --fg:#000;
+    --muted:#6f6f6f;
+    --line:#000;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    letter-spacing:.02em;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ---- Header ---- */
+  header{
+    padding:32px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    width:24px;
+    background:none;
+    border:none;
+    padding:6px 0;
+    cursor:pointer;
+  }
+  .menu-toggle span{
+    display:block;
+    width:100%;
+    height:1.5px;
+    background:#0a0a0a;
+  }
+
+  .nav{
+    display:flex;
+    gap:28px;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .nav a{opacity:.9;}
+  .nav a:hover{opacity:1;text-decoration:underline;}
+
+  .wordmark{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:14px;
+    font-weight:400;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:#0a0a0a;
+    transition:opacity .15s;
+  }
+  .wordmark-wrap:hover .wordmark{opacity:.6;}
+
+  .wordmark-wrap{
+    position:relative;
+    display:inline-block;
+    background:none;
+    border:none;
+    padding:0;
+    font:inherit;
+    cursor:pointer;
+  }
+  .wordmark-cart-badge{
+    position:absolute;
+    left:-11px;
+    bottom:-7px;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#0a0a0a;
+    color:#fff;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:8.5px;
+    font-weight:800;
+    letter-spacing:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:5;
+  }
+  .wordmark-cart-badge.visible{display:flex;}
+
+  /* ---- Nav drawer ---- */
+  .nav-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:1150;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .nav-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .nav-drawer{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:380px;
+    max-width:66vw;
+    background:#fff;
+    z-index:1151;
+    transform:translateX(-100%);
+    transition:transform .35s ease;
+    box-shadow:10px 0 30px rgba(0,0,0,.2);
+  }
+  .nav-drawer.open{
+    transform:translateX(0);
+  }
+  .nav-drawer-header{
+    padding:28px 28px 0;
+  }
+  .nav-drawer-close{
+    cursor:pointer;
+    font-size:26px;
+    font-weight:300;
+    line-height:1;
+    color:#0a0a0a;
+  }
+  .nav-drawer-close:hover{opacity:.6;}
+  .nav-drawer-links{
+    display:flex;
+    flex-direction:column;
+    gap:34px;
+    padding:56px 28px;
+  }
+  .nav-drawer-links a{
+    font-size:30px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    color:#0a0a0a;
+  }
+  .nav-drawer-links a:hover{opacity:.6;}
+
+  /* ---- Product layout ---- */
+  .product{
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:48px;
+    padding:20px 40px 60px;
+    align-items:start;
+  }
+  @media (max-width:900px){
+    .product{grid-template-columns:1fr;}
+  }
+
+  .gallery{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px;
+  }
+  .gallery figure{
+    position:relative;
+    margin:0;
+  }
+  .gallery img{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    display:block;
+    background:#eee;
+    cursor:zoom-in;
+  }
+  .gallery-dots{display:none;}
+
+  /* ---- Lightbox ---- */
+  .lightbox{
+    display:flex;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.88);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    padding:60px;
+    cursor:zoom-out;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .28s ease;
+  }
+  .lightbox.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .lightbox img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    transform:scale(.96);
+    transition:transform .28s ease;
+  }
+  .lightbox.open img{
+    transform:scale(1);
+  }
+  .lightbox .lightbox-close{
+    position:absolute;
+    top:24px;
+    right:32px;
+    color:#fff;
+    font-size:28px;
+    font-weight:300;
+    line-height:1;
+    cursor:pointer;
+  }
+  .lightbox-dots{display:none;}
+
+  /* ---- Cart drawer ---- */
+  .cart-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:1100;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .cart-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .cart-drawer{
+    position:fixed;
+    top:0;
+    right:0;
+    height:100%;
+    width:420px;
+    max-width:92vw;
+    background:#e4e4e1;
+    z-index:1101;
+    display:flex;
+    flex-direction:column;
+    transform:translateX(100%);
+    transition:transform .35s ease;
+    box-shadow:-10px 0 30px rgba(0,0,0,.2);
+    font-family:'Oswald','Helvetica Neue',Arial,sans-serif;
+    color:#16162e;
+  }
+  .cart-drawer.open{
+    transform:translateX(0);
+  }
+  .cart-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 24px 18px;
+  }
+  .cart-header h2{
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    color:#16162e;
+  }
+  .cart-close{
+    cursor:pointer;
+    font-size:20px;
+    font-weight:300;
+    line-height:1;
+    color:#16162e;
+  }
+  .cart-close:hover{opacity:.7;}
+  .cart-items{
+    flex:1;
+    overflow-y:auto;
+    padding:0 24px 22px;
+  }
+  .cart-empty{
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted);
+    text-align:center;
+    padding:80px 0;
+  }
+  .cart-item{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    background:none;
+    border:1px solid rgba(22,22,46,.25);
+    border-radius:2px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:none;
+  }
+  .cart-item:last-child{
+    margin-bottom:0;
+  }
+  .cart-item img{
+    width:100px;
+    height:125px;
+    object-fit:cover;
+    object-position:top;
+    background:#eee;
+    border-radius:0;
+    flex-shrink:0;
+  }
+  .cart-item-info{flex:1;}
+  .cart-item-title{
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.005em;
+    margin-bottom:6px;
+    color:#16162e;
+  }
+  .cart-item-price{
+    font-size:13px;
+    font-weight:400;
+    margin-bottom:12px;
+    color:#16162e;
+  }
+  .cart-item-meta{
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    margin-bottom:10px;
+    color:#16162e;
+  }
+  .cart-item-qty-box{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    border:1.5px solid #16162e;
+    border-radius:2px;
+    padding:6px 12px;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    color:#16162e;
+  }
+  .cart-item-qty-value{
+    font-size:15px;
+    font-weight:700;
+  }
+  .cart-item-remove{
+    cursor:pointer;
+    align-self:center;
+    opacity:.85;
+    color:#16162e;
+  }
+  .cart-item-remove:hover{opacity:1;}
+  .cart-item-remove svg{display:block;width:17px;height:17px;}
+  .cart-footer{
+    padding:20px 24px 28px;
+  }
+  .cart-subtotal{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    color:#16162e;
+  }
+  .cart-note{
+    font-size:11px;
+    font-weight:600;
+    color:#16162e;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    margin-bottom:18px;
+  }
+  .cart-note a{
+    color:#16162e;
+    text-decoration:underline;
+  }
+  .cart-note a:hover{opacity:.7;}
+  .cart-checkout{
+    width:100%;
+    padding:16px;
+    background:#17171f;
+    color:#fff;
+    border:none;
+    border-radius:0;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    cursor:pointer;
+    margin-bottom:14px;
+    font-family:inherit;
+  }
+  .cart-checkout:hover{background:#26262f;}
+  .cart-view{
+    display:block;
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    text-decoration:underline;
+    color:#16162e;
+  }
+  .gallery .idx{
+    position:absolute;
+    top:10px;
+    left:10px;
+    font-size:11px;
+    font-weight:700;
+    color:#000;
+  }
+  .gallery .idx.on-dark{
+    color:#fff;
+    letter-spacing:.05em;
+  }
+
+  .details{
+    padding-top:4px;
+  }
+  .title{
+    font-size:22px;
+    text-transform:uppercase;
+    font-weight:800;
+    letter-spacing:.02em;
+    margin-bottom:14px;
+  }
+  .desc{
+    font-size:11px;
+    line-height:1.7;
+    color:#222;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    margin-bottom:18px;
+    max-width:430px;
+  }
+  .price{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:22px;
+  }
+
+  .field-label{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:10px;
+  }
+  .sizes{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:24px;
+  }
+  .size-btn{
+    width:38px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #000;
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    cursor:pointer;
+    background:#fff;
+    color:#000;
+    transition:all .15s;
+  }
+  .size-btn:hover{background:#f2f2f2;}
+  .size-btn.selected{background:#000;color:#fff;}
+  .size-btn.disabled{
+    color:#bbb;
+    border-color:#ccc;
+    text-decoration:line-through;
+    cursor:not-allowed;
+    background:#fafafa;
+  }
+
+  .qty{
+    display:flex;
+    align-items:center;
+    border:1px solid #000;
+    width:110px;
+    margin-bottom:22px;
+  }
+  .qty button{
+    width:34px;
+    height:36px;
+    background:none;
+    border:none;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .qty input{
+    width:42px;
+    text-align:center;
+    border:none;
+    border-left:1px solid #000;
+    border-right:1px solid #000;
+    font-size:12px;
+    height:36px;
+  }
+
+  .add-to-cart{
+    width:100%;
+    max-width:420px;
+    padding:15px;
+    background:#000;
+    color:#fff;
+    border:none;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    cursor:pointer;
+    margin-bottom:26px;
+  }
+  .add-to-cart:hover{background:#222;}
+
+  .links{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .links a{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:#000;
+  }
+  .links a:hover{text-decoration:underline;}
+
+  /* ---- Info popover (Shipping & Returns / Contact / Size Chart) ---- */
+  .info-catcher{
+    position:fixed;
+    inset:0;
+    z-index:1199;
+    display:none;
+  }
+  .info-catcher.open{display:block;}
+  .info-modal{
+    position:fixed;
+    top:110px;
+    right:40px;
+    z-index:1200;
+    background:#d9d9d6;
+    color:#0a0a0a;
+    border:1px solid #000;
+    border-radius:6px;
+    padding:28px 34px;
+    width:480px;
+    max-width:calc(100vw - 40px);
+    max-height:70vh;
+    overflow-y:auto;
+    box-shadow:0 14px 30px rgba(0,0,0,.18);
+    opacity:0;
+    transform-origin:top right;
+    transform:scale(.94) translateY(-6px);
+    pointer-events:none;
+    transition:opacity .16s ease, transform .16s ease;
+  }
+  .info-modal.open{
+    opacity:1;
+    transform:scale(1) translateY(0);
+    pointer-events:auto;
+  }
+  .info-modal-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    line-height:1;
+  }
+  .info-modal h3{
+    font-size:14px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin-bottom:18px;
+    padding-right:26px;
+  }
+  .info-modal h4{
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:16px 0 8px;
+  }
+  .info-modal h4:first-of-type{margin-top:0;}
+  .info-modal p{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    line-height:1.6;
+    letter-spacing:.01em;
+    margin-bottom:4px;
+  }
+  .info-modal p a{text-decoration:underline;}
+
+  .info-modal.size-chart-modal{
+    width:600px;
+  }
+  .size-chart-svg{
+    display:block;
+    width:100%;
+    height:auto;
+    margin-bottom:20px;
+  }
+  .size-chart-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    text-transform:none;
+    letter-spacing:0;
+  }
+  .size-chart-table th{
+    text-align:left;
+    font-size:12px;
+    font-weight:700;
+    padding:10px 12px;
+  }
+  .size-chart-table td{
+    padding:10px 12px;
+    font-weight:400;
+  }
+  .size-chart-table td:first-child{font-weight:700;}
+  .size-chart-table tbody tr:nth-child(odd){background:rgba(255,255,255,.5);}
+  .size-chart-note{
+    text-align:center;
+    font-size:11px;
+    font-weight:700;
+    text-transform:none;
+    letter-spacing:0;
+    padding:10px 12px;
+    background:rgba(255,255,255,.5);
+  }
+
+  /* ---- Statement section ---- */
+  .statement{
+    min-height:100vh;
+    background:#0a0a0a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:80px 8vw;
+    text-align:center;
+    overflow:hidden;
+  }
+  .statement h2{
+    font-family:Georgia,'Times New Roman',serif;
+    color:#e8e1d4;
+    font-size:clamp(48px, 14vw, 190px);
+    font-weight:400;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:-.01em;
+    margin:0;
+    opacity:.2;
+    transition:opacity 1.4s ease;
+  }
+  .statement h2.in-view{
+    opacity:1;
+  }
+
+  /* ---- You may also like ---- */
+  .section-heading{
+    padding:20px 40px 16px;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    border-top:1px solid #ddd;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:24px;
+    padding:0 40px 60px;
+  }
+  @media (max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+  }
+  .grid-item img{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    display:block;
+    margin-bottom:10px;
+    background:#eee;
+  }
+  .grid-item .gi-title{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+  }
+  .grid-item .gi-price{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  footer{
+    padding:30px 40px;
+    background:#0a0a0a;
+    border-top:1px solid #1a1a1a;
+    text-align:center;
+    font-size:10px;
+    color:#8a8a80;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+
+  /* ---- Mobile sticky CTA bar ---- */
+  .mobile-cta-bar{display:none;}
+
+  /* ==========================================================
+     Mobile (<=640px) — designed for phones, not shrunk desktop
+     ========================================================== */
+  @media (max-width:640px){
+    body{position:relative;}
+    header{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      z-index:60;
+      padding:16px 20px;
+      background:transparent;
+    }
+    .nav{display:none;}
+    .menu-toggle{
+      display:flex;
+      filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));
+    }
+    .menu-toggle span{background:#fff;}
+    .wordmark{
+      font-size:11px;
+      letter-spacing:.16em;
+      color:#fff;
+      text-shadow:0 1px 6px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.45);
+    }
+    .wordmark-cart-badge{
+      width:15px;
+      height:15px;
+      font-size:8px;
+      left:auto;
+      right:-7px;
+      top:-6px;
+      bottom:auto;
+      border:1.5px solid #fff;
+      box-shadow:0 1px 4px rgba(0,0,0,.4);
+    }
+    .nav-drawer{max-width:72vw;}
+    .nav-drawer-header{padding:20px 22px 0;}
+    .nav-drawer-close{font-size:22px;}
+    .nav-drawer-links{gap:26px;padding:44px 22px;}
+    .nav-drawer-links a{font-size:24px;}
+
+    .info-modal{
+      top:70px;
+      right:16px;
+      left:16px;
+      width:auto;
+    }
+    .info-modal.size-chart-modal{
+      width:auto;
+    }
+    .size-chart-table{font-size:10.5px;}
+    .size-chart-table th, .size-chart-table td{padding:8px 6px;}
+
+    .product{
+      padding:0 0 32px;
+      gap:0;
+    }
+    .gallery{
+      display:flex;
+      grid-template-columns:unset;
+      gap:0;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .gallery::-webkit-scrollbar{display:none;}
+    .gallery figure{
+      flex:0 0 100%;
+      scroll-snap-align:start;
+      scroll-snap-stop:always;
+      height:100vh;
+      height:100svh;
+    }
+    .gallery img{
+      height:100%;
+      aspect-ratio:unset;
+      object-fit:cover;
+    }
+    .gallery .idx{display:none;}
+
+    .gallery-dots{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:6px;
+      padding:14px 0 4px;
+    }
+    .gallery-dots .dot{
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:#ccc;
+      transition:background .2s, transform .2s;
+    }
+    .gallery-dots .dot.active{
+      background:#000;
+      transform:scale(1.3);
+    }
+
+    .details{
+      padding:28px 20px 92px;
+    }
+    .title{font-size:19px;margin-bottom:10px;}
+    .desc{font-size:11.5px;max-width:none;margin-bottom:20px;}
+    .price{font-size:15px;margin-bottom:20px;}
+
+    .size-btn{width:44px;height:44px;font-size:12px;}
+    .qty{width:126px;}
+    .qty button{width:40px;height:42px;font-size:16px;}
+    .qty input{width:46px;height:42px;font-size:13px;}
+
+    .details > .add-to-cart{display:none;}
+    .links{gap:10px;margin-top:4px;}
+    .links a{font-size:11.5px;}
+
+    .statement{
+      min-height:60vh;
+      padding:6vh 8vw;
+      scroll-snap-align:start;
+    }
+    .statement.statement-compact{
+      min-height:66vh;
+    }
+    .statement h2{
+      font-size:clamp(44px, 18vw, 104px);
+      line-height:1.06;
+      transition:opacity .7s ease;
+    }
+    .statement.statement-compact h2{
+      font-size:clamp(32px, 13vw, 78px);
+      line-height:1.16;
+    }
+
+    body{
+      scroll-snap-type:y proximity;
+      padding-bottom:60px;
+    }
+
+    .lightbox{padding:20px;}
+    .lightbox .lightbox-close{top:16px;right:20px;font-size:24px;}
+    .lightbox-dots{
+      display:flex;
+      position:absolute;
+      bottom:28px;
+      left:0;
+      right:0;
+      justify-content:center;
+      gap:7px;
+    }
+    .lightbox-dots .dot{
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:rgba(255,255,255,.35);
+      transition:background .2s, transform .2s;
+    }
+    .lightbox-dots .dot.active{
+      background:#fff;
+      transform:scale(1.3);
+    }
+
+    .cart-drawer{width:88vw;max-width:360px;}
+    .cart-header{padding:18px 20px 14px;}
+    .cart-header h2{font-size:13px;}
+    .cart-close{font-size:18px;}
+    .cart-items{padding:0 20px 18px;}
+    .cart-item{padding:14px;gap:14px;}
+    .cart-item img{width:76px;height:95px;}
+    .cart-item-title{font-size:12.5px;margin-bottom:5px;}
+    .cart-item-price{font-size:11.5px;margin-bottom:8px;}
+    .cart-item-meta{font-size:10.5px;margin-bottom:8px;}
+    .cart-item-qty-box{font-size:9.5px;padding:5px 10px;gap:8px;}
+    .cart-item-qty-value{font-size:12.5px;}
+    .cart-item-remove svg{width:14px;height:14px;}
+    .cart-footer{padding:16px 20px 20px;}
+    .cart-subtotal{font-size:12px;}
+    .cart-note{font-size:9.5px;margin-bottom:14px;}
+    .cart-checkout{padding:12px;font-size:11px;letter-spacing:.04em;margin-bottom:12px;}
+    .cart-view{font-size:10.5px;}
+
+    footer{padding:22px 20px;font-size:9px;}
+
+    .mobile-cta-bar{
+      display:flex;
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      border-top:1px solid rgba(0,0,0,.06);
+      padding:9px 20px calc(9px + env(safe-area-inset-bottom));
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      z-index:900;
+      box-shadow:0 -8px 18px -16px rgba(0,0,0,.18);
+    }
+    .mobile-cta-info{
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      line-height:1;
+    }
+    .mobile-cta-price{
+      font-size:11.5px;
+      font-weight:700;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+    .mobile-cta-size{
+      font-size:9.5px;
+      font-weight:500;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:var(--muted);
+    }
+    .mobile-cta-bar .add-to-cart{
+      width:auto;
+      flex:0 0 auto;
+      max-width:none;
+      margin-bottom:0;
+      padding:8px 20px;
+      font-size:10px;
+      letter-spacing:.1em;
+      border-radius:2px;
+      transition:background .15s ease, transform .1s ease;
+    }
+    .mobile-cta-bar .add-to-cart:active{
+      transform:scale(.97);
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav">
+    <a href="product-page.html">Shop</a>
+    <a href="manifesto.html">Manifesto</a>
+  </nav>
+  <button class="wordmark-wrap" id="wordmarkCartBtn" type="button" aria-label="Open cart">
+    <span class="wordmark">GEOPOL.CLUB</span>
+    <span class="wordmark-cart-badge" id="wordmarkCartBadge">0</span>
+  </button>
+</header>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="nav-drawer-close" id="navDrawerClose">&times;</span>
+  </div>
+  <nav class="nav-drawer-links">
+    <a href="product-page.html">Shop</a>
+    <a href="manifesto.html">Manifesto</a>
+  </nav>
+</div>
+
+<div class="product">
+  <div class="gallery">
+    <figure>
+      <span class="idx">[1/4]</span>
+      <img src="7d4ad714-5fbd-46d0-b241-90c79b6fe9b3-1.png" alt="Model wearing CUI BONO T-SHIRT, front view">
+    </figure>
+    <figure>
+      <span class="idx">[2/4]</span>
+      <img src="https://cdn.shopify.com/s/files/1/1011/8882/9472/files/8bbb155b-0147-4ad1-8894-d89e047f57ef.png?v=1784036201" alt="">
+    </figure>
+    <figure>
+      <span class="idx on-dark">[3/4]</span>
+      <img src="https://cdn.shopify.com/s/files/1/1011/8882/9472/files/3e1c093c-993b-4768-934b-0c211363d331.png?v=1784016378" alt="CUI BONO T-SHIRT, flat product shot">
+    </figure>
+    <figure>
+      <span class="idx on-dark">[4/4]</span>
+      <img src="https://cdn.shopify.com/s/files/1/1011/8882/9472/files/3cc1afca-5b7b-4f95-99d3-e75e30b15519-1.png?v=1784016434" alt="CUI BONO T-SHIRT, flat product shot">
+    </figure>
+  </div>
+
+  <div class="gallery-dots" id="galleryDots">
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>
+
+  <div class="details">
+    <div class="title">CUI BONO T-SHIRT</div>
+    <p class="desc">Short-sleeve t-shirt in 100% cotton with a boxy, relaxed fit. Rib knit neckline. Single stitch hems at waist and cuffs. Printed graphic at front and back.</p>
+    <div class="price">$55.00 AUD</div>
+
+    <div class="field-label">Sizes</div>
+    <div class="sizes">
+      <div class="size-btn selected">S</div>
+      <div class="size-btn">M</div>
+      <div class="size-btn">L</div>
+      <div class="size-btn">XL</div>
+      <div class="size-btn disabled">2XL</div>
+    </div>
+
+    <div class="field-label">Quantity</div>
+    <div class="qty">
+      <button type="button" onclick="stepQty(-1)">&minus;</button>
+      <input type="text" id="qtyInput" value="1" readonly>
+      <button type="button" onclick="stepQty(1)">&#43;</button>
+    </div>
+
+    <button class="add-to-cart">Add to Cart</button>
+
+    <div class="links">
+      <a href="#" id="shippingReturnsLink">Shipping &amp; Returns</a>
+      <a href="#" id="helpContactLink">Help and Contact</a>
+      <a href="#" id="sizeChartLink">Size Chart</a>
+    </div>
+  </div>
+</div>
+
+<div class="info-catcher" id="shippingReturnsCatcher"></div>
+<div class="info-modal" id="shippingReturnsModal">
+  <h3>Shipping &amp; Returns</h3>
+  <span class="info-modal-close" id="shippingReturnsClose">&times;</span>
+
+  <h4>Shipping</h4>
+  <p>Please allow up to 4 weeks for your order to ship.</p>
+
+  <h4>Returns &amp; Exchanges</h4>
+  <p>All sales final &mdash; no returns or exchanges. Please ensure that your chosen product sizing, shipping address, and billing address that you are submitting is correct as it cannot be modified or changed. As orders cannot be modified, they can only be cancelled if there are critical errors in your order. Stock is not available for size corrections and/or exchanges. Please direct all communications to <a href="mailto:orders@geopol.club">orders@geopol.club</a>.</p>
+</div>
+
+<div class="info-catcher" id="helpContactCatcher"></div>
+<div class="info-modal" id="helpContactModal">
+  <h3>Help and Contact</h3>
+  <span class="info-modal-close" id="helpContactClose">&times;</span>
+
+  <p>Please direct all communications to <a href="mailto:help@geopol.club">help@geopol.club</a>.</p>
+  <p>We get a lot of DMs.</p>
+  <p>Email is preferred.</p>
+</div>
+
+<div class="info-catcher" id="sizeChartCatcher"></div>
+<div class="info-modal size-chart-modal" id="sizeChartModal">
+  <h3>Size Chart</h3>
+  <span class="info-modal-close" id="sizeChartClose">&times;</span>
+
+  <svg class="size-chart-svg" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg">
+    <text x="210" y="14" font-size="9" text-anchor="middle" fill="#666" letter-spacing="1">SHOULDER WIDTH</text>
+    <line x1="140" y1="24" x2="280" y2="24" stroke="#888" stroke-width="1"/>
+    <line x1="140" y1="19" x2="140" y2="29" stroke="#888" stroke-width="1"/>
+    <line x1="280" y1="19" x2="280" y2="29" stroke="#888" stroke-width="1"/>
+
+    <path d="M158,38 C166,29 178,24 210,24 C242,24 254,29 262,38
+             L308,66 L288,86 L268,68
+             L268,206 L152,206 L152,68
+             L132,86 L112,66 Z"
+          fill="none" stroke="#444" stroke-width="1.3"/>
+    <path d="M188,66 L232,66 L232,96 L210,108 L188,96 Z" fill="none" stroke="#444" stroke-width="1"/>
+
+    <text x="210" y="122" font-size="9" text-anchor="middle" fill="#666" letter-spacing="1">CHEST WIDTH</text>
+    <line x1="152" y1="132" x2="268" y2="132" stroke="#888" stroke-width="1"/>
+    <line x1="152" y1="127" x2="152" y2="137" stroke="#888" stroke-width="1"/>
+    <line x1="268" y1="127" x2="268" y2="137" stroke="#888" stroke-width="1"/>
+
+    <line x1="330" y1="38" x2="330" y2="206" stroke="#888" stroke-width="1"/>
+    <line x1="325" y1="38" x2="335" y2="38" stroke="#888" stroke-width="1"/>
+    <line x1="325" y1="206" x2="335" y2="206" stroke="#888" stroke-width="1"/>
+    <text x="344" y="122" font-size="9" fill="#666" letter-spacing="1" transform="rotate(90 344,122)">BODY LENGTH</text>
+  </svg>
+
+  <table class="size-chart-table">
+    <thead>
+      <tr><th>Size</th><th>Shoulder Width</th><th>Chest Width</th><th>Body Length</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>S</td><td>18.5" / 47cm</td><td>20" / 51 cm</td><td>22.8" / 58 cm</td></tr>
+      <tr><td>M</td><td>18.9" / 48 cm</td><td>21.2" / 54 cm</td><td>24" / 61 cm</td></tr>
+      <tr><td>L</td><td>19.2" / 49 cm</td><td>22.5" / 57 cm</td><td>30" / 66 cm</td></tr>
+      <tr><td>XL</td><td>19.5" / 50 cm</td><td>23.5" / 60 cm</td><td>28" / 71 cm</td></tr>
+      <tr><td>XXL</td><td>20.4" / 52 cm</td><td>24.8" / 63 cm</td><td>28.7" / 73 cm</td></tr>
+    </tbody>
+  </table>
+  <p class="size-chart-note">All measurements are done in inches/cm.</p>
+</div>
+
+<div class="mobile-cta-bar">
+  <div class="mobile-cta-info">
+    <span class="mobile-cta-price">$55.00 AUD</span>
+    <span class="mobile-cta-size" id="mobileCtaSize">Size: S</span>
+  </div>
+  <button class="add-to-cart" type="button">Add to Cart</button>
+</div>
+
+<section class="statement">
+  <h2>Who<br>Benefits?</h2>
+</section>
+
+<section class="statement statement-compact">
+  <h2>Look.<br>At.<br>A.<br>Map.</h2>
+</section>
+
+<footer>My Store &copy; 2026</footer>
+
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-dots" id="lightboxDots">
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h2 id="cartHeading">Your Cart (0 Items)</h2>
+    <span class="cart-close" id="cartClose">&times;</span>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Your cart is empty</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0.00 AUD</span></div>
+    <div class="cart-note">Tax included. <a href="shipping-policy.html">Shipping</a> calculated at checkout.</div>
+    <button class="cart-checkout" type="button">Checkout</button>
+    <a href="cart-page.html" class="cart-view" id="cartViewLink">View Cart</a>
+  </div>
+</div>
+
+<script>
+  const mobileCtaSize = document.getElementById('mobileCtaSize');
+  document.querySelectorAll('.size-btn:not(.disabled)').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      if(mobileCtaSize) mobileCtaSize.textContent = `Size: ${btn.textContent.trim()}`;
+    });
+  });
+  function stepQty(delta){
+    const input = document.getElementById('qtyInput');
+    let val = Math.max(1, parseInt(input.value || '1', 10) + delta);
+    input.value = val;
+  }
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxDots = document.querySelectorAll('#lightboxDots .dot');
+  const galleryImgs = Array.from(document.querySelectorAll('.gallery img'));
+  let lightboxIndex = 0;
+
+  function showLightboxImage(idx){
+    lightboxIndex = (idx + galleryImgs.length) % galleryImgs.length;
+    const img = galleryImgs[lightboxIndex];
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightboxDots.forEach(d => d.classList.remove('active'));
+    if(lightboxDots[lightboxIndex]) lightboxDots[lightboxIndex].classList.add('active');
+  }
+
+  galleryImgs.forEach((img, idx)=>{
+    img.addEventListener('click', ()=>{
+      showLightboxImage(idx);
+      lightbox.classList.add('open');
+    });
+  });
+
+  /* Swipe to navigate between images while zoomed in (mobile) */
+  let touchStartX = 0, touchStartY = 0, isSwiping = false;
+
+  lightbox.addEventListener('touchstart', (e)=>{
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    isSwiping = false;
+  }, { passive:true });
+
+  lightbox.addEventListener('touchmove', (e)=>{
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10){
+      isSwiping = true;
+    }
+  }, { passive:true });
+
+  lightbox.addEventListener('touchend', (e)=>{
+    if(isSwiping){
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if(Math.abs(dx) > 40){
+        showLightboxImage(dx < 0 ? lightboxIndex + 1 : lightboxIndex - 1);
+      }
+    }
+  });
+
+  lightbox.addEventListener('click', ()=>{
+    if(isSwiping){
+      isSwiping = false;
+      return;
+    }
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      closeCart();
+      closeNav();
+    }
+    if(lightbox.classList.contains('open')){
+      if(e.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
+      if(e.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
+    }
+  });
+
+  /* ---- Cart ---- */
+  /* Maps each size to its Shopify variant ID, so Checkout can hand off to
+     real Shopify checkout via the cart permalink pattern:
+     https://{shop}/cart/{variantId}:{qty},{variantId}:{qty}/checkout
+     No storefront token needed — this is a plain URL redirect. */
+  const SHOPIFY_DOMAIN = 'ke54kb-uw.myshopify.com';
+  const SIZE_VARIANT_MAP = {
+    'S': '51980106170656',
+    'M': '51980106203424',
+    'L': '51980106236192',
+    'XL': '51980106268960',
+    '2XL': '51980106301728'
+  };
+  function goToShopifyCheckout(items){
+    const lineItems = items
+      .filter(item => SIZE_VARIANT_MAP[item.size])
+      .map(item => `${SIZE_VARIANT_MAP[item.size]}:${item.qty}`)
+      .join(',');
+    if(!lineItems) return;
+    window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${lineItems}/checkout`;
+  }
+
+  const CART_STORAGE_KEY = 'geopolCart';
+  function loadStoredCart(){
+    try { return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'); } catch(e){ return []; }
+  }
+  function saveStoredCart(){
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  }
+  let cart = loadStoredCart();
+  const cartOverlay = document.getElementById('cartOverlay');
+  const cartDrawer = document.getElementById('cartDrawer');
+  const cartItemsEl = document.getElementById('cartItems');
+  const cartHeading = document.getElementById('cartHeading');
+  const cartSubtotalEl = document.getElementById('cartSubtotal');
+  const wordmarkCartBadge = document.getElementById('wordmarkCartBadge');
+  const cartViewLink = document.getElementById('cartViewLink');
+
+  function openCart(){
+    cartDrawer.classList.add('open');
+    cartOverlay.classList.add('open');
+  }
+  function closeCart(){
+    cartDrawer.classList.remove('open');
+    cartOverlay.classList.remove('open');
+  }
+
+  function renderCart(){
+    if(cart.length === 0){
+      cartItemsEl.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
+    } else {
+      cartItemsEl.innerHTML = cart.map((item, i) => `
+        <div class="cart-item">
+          <img src="${item.img}" alt="${item.title}">
+          <div class="cart-item-info">
+            <div class="cart-item-title">${item.title}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+            <div class="cart-item-meta">Size: ${item.size}</div>
+            <div class="cart-item-qty-box">Quantity: <span class="cart-item-qty-value">${item.qty}</span></div>
+          </div>
+          <span class="cart-item-remove" data-index="${i}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M18 7l-.8 12.2a2 2 0 0 1-2 1.8H8.8a2 2 0 0 1-2-1.8L6 7"/></svg>
+          </span>
+        </div>
+      `).join('');
+      cartItemsEl.querySelectorAll('.cart-item-remove').forEach(el=>{
+        el.addEventListener('click', ()=>{
+          cart.splice(parseInt(el.dataset.index, 10), 1);
+          saveStoredCart();
+          renderCart();
+        });
+      });
+    }
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    cartHeading.textContent = `Your Cart (${totalItems} Item${totalItems !== 1 ? 's' : ''})`;
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    cartSubtotalEl.textContent = `$${subtotal.toFixed(2)} AUD`;
+    if(wordmarkCartBadge){
+      wordmarkCartBadge.textContent = totalItems;
+      wordmarkCartBadge.classList.toggle('visible', totalItems > 0);
+    }
+    if(cartViewLink){
+      /* localStorage isn't reliably shared between local files (esp. file:// in
+         Safari), so pass the cart along in the URL as a fallback the cart page
+         can read directly. */
+      cartViewLink.href = 'cart-page.html?cart=' + encodeURIComponent(JSON.stringify(cart));
+    }
+    saveStoredCart();
+  }
+  renderCart();
+
+  document.getElementById('wordmarkCartBtn').addEventListener('click', ()=>{
+    closeNav();
+    openCart();
+  });
+
+  document.querySelectorAll('.add-to-cart').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const size = document.querySelector('.size-btn.selected')?.textContent.trim() || 'S';
+      const qty = parseInt(document.getElementById('qtyInput').value, 10) || 1;
+      const existing = cart.find(i => i.size === size);
+      if(existing){
+        existing.qty += qty;
+      } else {
+        cart.push({
+          title:'CUI BONO T-SHIRT',
+          price:55.00,
+          size,
+          qty,
+          img:'7d4ad714-5fbd-46d0-b241-90c79b6fe9b3-1.png'
+        });
+      }
+      renderCart();
+      openCart();
+    });
+  });
+
+  document.getElementById('cartClose').addEventListener('click', closeCart);
+  cartOverlay.addEventListener('click', closeCart);
+  document.querySelector('.cart-checkout').addEventListener('click', ()=>{
+    goToShopifyCheckout(cart);
+  });
+
+  /* ---- Nav drawer ---- */
+  const navOverlay = document.getElementById('navOverlay');
+  const navDrawer = document.getElementById('navDrawer');
+  function openNav(){
+    navDrawer.classList.add('open');
+    navOverlay.classList.add('open');
+  }
+  function closeNav(){
+    navDrawer.classList.remove('open');
+    navOverlay.classList.remove('open');
+  }
+  document.getElementById('menuToggle').addEventListener('click', ()=>{
+    closeCart();
+    openNav();
+  });
+  document.getElementById('navDrawerClose').addEventListener('click', closeNav);
+  navOverlay.addEventListener('click', closeNav);
+
+  /* ---- Scroll fade-in for statement sections ---- */
+  const statementObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        statementObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold:.4 });
+
+  document.querySelectorAll('.statement h2').forEach(el=>{
+    statementObserver.observe(el);
+  });
+
+  /* ---- Mobile gallery swipe pagination dots ---- */
+  const galleryEl = document.querySelector('.gallery');
+  const galleryFigures = document.querySelectorAll('.gallery figure');
+  const galleryDots = document.querySelectorAll('#galleryDots .dot');
+
+  const galleryObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const idx = Array.from(galleryFigures).indexOf(entry.target);
+        galleryDots.forEach(d=>d.classList.remove('active'));
+        if(galleryDots[idx]) galleryDots[idx].classList.add('active');
+      }
+    });
+  }, { root:galleryEl, threshold:.6 });
+
+  galleryFigures.forEach(f => galleryObserver.observe(f));
+
+  /* ---- Info popovers (Shipping & Returns / Help and Contact) ---- */
+  const infoPopovers = [];
+
+  function setupInfoPopover(linkId, modalId, catcherId, closeId){
+    const link = document.getElementById(linkId);
+    const modal = document.getElementById(modalId);
+    const catcher = document.getElementById(catcherId);
+    const close = document.getElementById(closeId);
+
+    function open(){
+      infoPopovers.forEach(p => p.close());
+      modal.classList.add('open');
+      catcher.classList.add('open');
+    }
+    function closePopover(){
+      modal.classList.remove('open');
+      catcher.classList.remove('open');
+    }
+
+    link.addEventListener('click', (e)=>{
+      e.preventDefault();
+      open();
+    });
+    close.addEventListener('click', closePopover);
+    catcher.addEventListener('click', closePopover);
+
+    infoPopovers.push({ close: closePopover });
+  }
+
+  setupInfoPopover('shippingReturnsLink', 'shippingReturnsModal', 'shippingReturnsCatcher', 'shippingReturnsClose');
+  setupInfoPopover('helpContactLink', 'helpContactModal', 'helpContactCatcher', 'helpContactClose');
+  setupInfoPopover('sizeChartLink', 'sizeChartModal', 'sizeChartCatcher', 'sizeChartClose');
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){
+      infoPopovers.forEach(p => p.close());
+    }
+  });
+</script>
+
+</body>
+</html>
