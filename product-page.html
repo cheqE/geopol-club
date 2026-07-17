@@ -410,6 +410,12 @@
     font-family:inherit;
   }
   .cart-checkout:hover{background:#26262f;}
+  .cart-checkout.is-disabled{
+    background:#c9c9c6;
+    color:#8a8a86;
+    cursor:not-allowed;
+  }
+  .cart-checkout.is-disabled:hover{background:#c9c9c6;}
   .cart-view{
     display:block;
     text-align:center;
@@ -1294,6 +1300,7 @@
   const cartSubtotalEl = document.getElementById('cartSubtotal');
   const wordmarkCartBadge = document.getElementById('wordmarkCartBadge');
   const cartViewLink = document.getElementById('cartViewLink');
+  const cartCheckoutBtn = document.querySelector('.cart-checkout');
 
   function openCart(){
     cartDrawer.classList.add('open');
@@ -1343,6 +1350,10 @@
          Safari), so pass the cart along in the URL as a fallback the cart page
          can read directly. */
       cartViewLink.href = 'cart-page.html?cart=' + encodeURIComponent(JSON.stringify(cart));
+    }
+    if(cartCheckoutBtn){
+      cartCheckoutBtn.disabled = cart.length === 0;
+      cartCheckoutBtn.classList.toggle('is-disabled', cart.length === 0);
     }
     saveStoredCart();
   }
