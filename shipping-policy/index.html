@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GEOPOL.CLUB — MANIFESTO</title>
+<title>SHIPPING POLICY — GEOPOL.CLUB</title>
 <style>
   :root{
     --bg:#fff;
@@ -11,26 +11,20 @@
     --muted:#6f6f6f;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  html, body{height:100%;}
+  html{background:#0a0a0a;}
   body{
     background:var(--bg);
     color:var(--fg);
     font-family:'Helvetica Neue', Arial, sans-serif;
     letter-spacing:.02em;
-    height:100vh;
-    height:100svh;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
   }
   a{color:inherit;text-decoration:none;}
 
   header{
-    padding:2.4vh 40px;
+    padding:32px 40px;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    flex:0 0 auto;
   }
   .menu-toggle{
     display:none;
@@ -153,40 +147,38 @@
   .nav-drawer-links a:hover{opacity:.6;}
 
   main{
-    max-width:640px;
-    width:100%;
+    max-width:680px;
     margin:0 auto;
-    padding:0 40px;
-    flex:1 1 auto;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    overflow:hidden;
+    padding:20px 40px 100px;
   }
   .page-title{
-    font-size:clamp(18px, 3.4vh, 26px);
+    font-size:26px;
     font-weight:800;
     text-transform:uppercase;
-    letter-spacing:.05em;
-    margin-bottom:3vh;
-    text-align:center;
-  }
-  .manifesto{
-    text-align:center;
-  }
-  .manifesto p{
-    font-size:clamp(11px, 2vh, 15px);
-    line-height:1.4;
-    text-transform:uppercase;
     letter-spacing:.03em;
-    margin-bottom:2vh;
+    margin-bottom:40px;
   }
-  .manifesto p:last-child{
-    margin-bottom:0;
+  .policy-section{
+    margin-bottom:36px;
   }
+  .policy-section h2{
+    font-size:13px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:14px;
+  }
+  .policy-section p{
+    font-size:13.5px;
+    line-height:1.75;
+    color:#222;
+    margin-bottom:14px;
+    max-width:620px;
+  }
+  .policy-section p:last-child{margin-bottom:0;}
 
   footer{
-    padding:2vh 40px;
+    padding:30px 40px;
     background:#0a0a0a;
     border-top:1px solid #1a1a1a;
     text-align:center;
@@ -194,18 +186,13 @@
     color:#8a8a80;
     text-transform:uppercase;
     letter-spacing:.08em;
-    flex:0 0 auto;
   }
 
-  /* ==========================================================
-     Mobile (<=640px) — narrow-width tweaks only; the fit-to-
-     screen, no-scroll behaviour above already applies everywhere
-     ========================================================== */
   @media (max-width:640px){
-    header{padding:1.8vh 20px;}
+    header{padding:18px 20px;}
     .nav{display:none;}
     .menu-toggle{display:flex;}
-    .wordmark{font-size:10px;letter-spacing:.14em;}
+    .wordmark{font-size:11px;letter-spacing:.16em;}
     .wordmark-cart-badge{width:13px;height:13px;font-size:7.5px;left:-8px;bottom:-5px;}
     .nav-drawer{max-width:72vw;}
     .nav-drawer-header{padding:20px 22px 0;}
@@ -213,9 +200,12 @@
     .nav-drawer-links{gap:26px;padding:44px 22px;}
     .nav-drawer-links a{font-size:24px;}
 
-    main{max-width:none;padding:0 22px;}
+    main{padding:8px 20px 70px;}
+    .page-title{font-size:21px;margin-bottom:30px;}
+    .policy-section{margin-bottom:30px;}
+    .policy-section p{font-size:13px;}
 
-    footer{padding:1.4vh 20px;font-size:7.5px;}
+    footer{padding:22px 20px;font-size:9px;}
   }
 </style>
 </head>
@@ -226,10 +216,10 @@
     <span></span><span></span><span></span>
   </button>
   <nav class="nav">
-    <a href="product-page.html">Shop</a>
-    <a href="manifesto.html" class="active">Manifesto</a>
+    <a href="/cui-bono/">Shop</a>
+    <a href="/manifesto/">Manifesto</a>
   </nav>
-  <a href="cart-page.html" class="wordmark-wrap" aria-label="View cart">
+  <a href="/cart-page/" class="wordmark-wrap" aria-label="View cart">
     <span class="wordmark">GEOPOL.CLUB</span>
     <span class="wordmark-cart-badge" id="wordmarkCartBadge">0</span>
   </a>
@@ -241,22 +231,28 @@
     <span class="nav-drawer-close" id="navDrawerClose">&times;</span>
   </div>
   <nav class="nav-drawer-links">
-    <a href="product-page.html">Shop</a>
-    <a href="manifesto.html">Manifesto</a>
+    <a href="/cui-bono/">Shop</a>
+    <a href="/manifesto/">Manifesto</a>
   </nav>
 </div>
 
 <main>
-  <div class="page-title">Manifesto</div>
-  <div class="manifesto">
-    <p>GEOPOL.CLUB</p>
-    <p>Question narratives.</p>
-    <p>Follow incentives.</p>
-    <p>Study power.</p>
-    <p>This is not an ideology.</p>
-    <p>It is a habit of observation.</p>
-    <p>WHO BENEFITS?</p>
-    <p>LOOK.<br>AT.<br>A.<br>MAP.</p>
+  <div class="page-title">Shipping Policy</div>
+
+  <div class="policy-section">
+    <h2>Shipping</h2>
+    <p>Once your order is shipped, you will receive a tracking number via email. Please allow up to 4 weeks for your order to ship.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2>All Sales Are Final</h2>
+  </div>
+
+  <div class="policy-section">
+    <h2>International Shipping / Customs</h2>
+    <p>You are responsible for all duties and taxes on your order. If you refuse a shipment from GEOPOL.CLUB, you are responsible for the original shipping charges, any import fees, duties and/or taxes that are incurred on the package, and the cost of returning the package to GEOPOL.CLUB. This amount will be deducted from your merchandise store credit. In the instance that the return fee exceeds the amount of the merchandise plus shipping costs, the package will be abandoned and you will not be issued a credit.</p>
+    <p>Depending on your country you will have the option to pre-pay your duties and taxes at checkout. This means you will not have to pay these fees when your order arrives, and we guarantee that you will not be required to pay additional costs upon delivery. Duties and taxes are calculated based on the items ordered, your shipment destination and the value of your purchase, and are added to your order total in the shopping cart. Duties and taxes are nonrefundable. These duties &amp; taxes are beyond our control as they are set by the Customs Authority of the destination country and depend on a number of factors, such as: country of origin of the purchased product, local VAT rates, &amp; local import taxes.</p>
+    <p>Deliveries to some countries also have the option at checkout to not pay for the duties, taxes, and fees upfront. Instead, you agree to pay all applicable fees upon delivery. We cannot guarantee the cost of the fees upon delivery, as the fees are calculated by your local customs authority. It will be your responsibility to pay these charges if and when asked to by your local authorities.</p>
   </div>
 </main>
 

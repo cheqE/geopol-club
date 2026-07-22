@@ -988,8 +988,8 @@
     <span></span><span></span><span></span>
   </button>
   <nav class="nav">
-    <a href="product-page.html">Shop</a>
-    <a href="manifesto.html">Manifesto</a>
+    <a href="/cui-bono/">Shop</a>
+    <a href="/manifesto/">Manifesto</a>
   </nav>
   <button class="wordmark-wrap" id="wordmarkCartBtn" type="button" aria-label="Open cart">
     <span class="wordmark">GEOPOL.CLUB</span>
@@ -1003,8 +1003,8 @@
     <span class="nav-drawer-close" id="navDrawerClose">&times;</span>
   </div>
   <nav class="nav-drawer-links">
-    <a href="product-page.html">Shop</a>
-    <a href="manifesto.html">Manifesto</a>
+    <a href="/cui-bono/">Shop</a>
+    <a href="/manifesto/">Manifesto</a>
   </nav>
 </div>
 
@@ -1012,7 +1012,7 @@
   <div class="gallery">
     <figure>
       <span class="idx">[1/4]</span>
-      <img src="7d4ad714-5fbd-46d0-b241-90c79b6fe9b3-1.png" alt="Model wearing CUI BONO T-SHIRT, front view">
+      <img src="/7d4ad714-5fbd-46d0-b241-90c79b6fe9b3-1.png" alt="Model wearing CUI BONO T-SHIRT, front view">
     </figure>
     <figure>
       <span class="idx">[2/4]</span>
@@ -1093,7 +1093,7 @@
   <h3>Size Chart</h3>
   <span class="info-modal-close" id="sizeChartClose">&times;</span>
 
-  <img class="size-chart-svg" src="TOD_logo_tshirt.webp" alt="Size chart: shoulder width, chest width, and body length measurements for sizes S through 2XL">
+  <img class="size-chart-svg" src="/TOD_logo_tshirt.webp" alt="Size chart: shoulder width, chest width, and body length measurements for sizes S through 2XL">
   <p class="size-chart-note">All measurements are done in inches/cm.</p>
 </div>
 
@@ -1137,9 +1137,9 @@
   </div>
   <div class="cart-footer">
     <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0.00 AUD</span></div>
-    <div class="cart-note">Tax included. <a href="shipping-policy.html">Shipping</a> calculated at checkout.</div>
+    <div class="cart-note">Tax included. <a href="/shipping-policy/">Shipping</a> calculated at checkout.</div>
     <button class="cart-checkout" type="button">Checkout</button>
-    <a href="cart-page.html" class="cart-view" id="cartViewLink">View Cart</a>
+    <a href="/cart-page/" class="cart-view" id="cartViewLink">View Cart</a>
   </div>
 </div>
 
@@ -1315,7 +1315,7 @@
       /* localStorage isn't reliably shared between local files (esp. file:// in
          Safari), so pass the cart along in the URL as a fallback the cart page
          can read directly. */
-      cartViewLink.href = 'cart-page.html?cart=' + encodeURIComponent(JSON.stringify(cart));
+      cartViewLink.href = '/cart-page/?cart=' + encodeURIComponent(JSON.stringify(cart));
     }
     if(cartCheckoutBtn){
       cartCheckoutBtn.disabled = cart.length === 0;
