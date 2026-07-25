@@ -1252,8 +1252,14 @@
   }
 
   const CART_STORAGE_KEY = 'geopolCart';
+  const PRODUCT_PRICE = 39.99;
   function loadStoredCart(){
-    try { return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'); } catch(e){ return []; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+      /* Self-heal: carts saved before a price change would otherwise keep
+         showing the old number forever. Always normalize to the current price. */
+      return parsed.map(item => ({...item, price: PRODUCT_PRICE}));
+    } catch(e){ return []; }
   }
   function saveStoredCart(){
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
@@ -1341,7 +1347,7 @@
       } else {
         cart.push({
           title:'CUI BONO T-SHIRT',
-          price:39.99,
+          price:PRODUCT_PRICE,
           size,
           qty,
           img:'/tshirt_1023x1537.png'

@@ -499,20 +499,26 @@
   }
 
   const CART_STORAGE_KEY = 'geopolCart';
+  const PRODUCT_PRICE = 39.99;
 
   function loadCart(){
     /* localStorage isn't reliably shared between local files (esp. file://
        in Safari), so the product page passes the cart in the URL when it
        links here. Prefer that; fall back to localStorage otherwise. */
+    /* Self-heal: carts saved before a price change would otherwise keep
+       showing the old number forever. Always normalize to the current price. */
     const fromUrl = new URLSearchParams(location.search).get('cart');
     if(fromUrl){
       try {
-        const parsed = JSON.parse(fromUrl);
+        const parsed = JSON.parse(fromUrl).map(item => ({...item, price: PRODUCT_PRICE}));
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(parsed));
         return parsed;
       } catch(e){ /* fall through to localStorage */ }
     }
-    try { return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'); } catch(e){ return []; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+      return parsed.map(item => ({...item, price: PRODUCT_PRICE}));
+    } catch(e){ return []; }
   }
   function saveCart(){
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
