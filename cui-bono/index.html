@@ -4,90 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CUI BONO T-SHIRT — GEOPOL.CLUB</title>
-<script>
-/* ---- IP-based currency display (estimate only; Shopify checkout always charges AUD) ---- */
-(function(){
-  const CUR_CACHE_KEY = 'geopolCurrencyV1';
-  const SYMBOLS = {USD:'$',EUR:'€',GBP:'£',CAD:'$',NZD:'$',JPY:'¥',CHF:'CHF ',SEK:'kr',NOK:'kr',DKK:'kr',SGD:'$',HKD:'$',MXN:'$',ZAR:'R',PLN:'zł',CZK:'Kč',HUF:'Ft',ILS:'₪',KRW:'₩',INR:'₹',IDR:'Rp',MYR:'RM',PHP:'₱',THB:'฿',TRY:'₺',BRL:'R$',RON:'lei',ISK:'kr',BGN:'лв',AUD:'$'};
-  const NO_DECIMALS = ['JPY','KRW','HUF','ISK'];
-  /* Maps ISO country code (from IP geolocation) to the currency we display.
-     Anything not listed here falls back to USD. */
-  const COUNTRY_TO_CURRENCY = {
-    AU:'AUD', US:'USD', GB:'GBP', CA:'CAD', NZ:'NZD', JP:'JPY', CH:'CHF', LI:'CHF',
-    SE:'SEK', NO:'NOK', DK:'DKK', SG:'SGD', HK:'HKD', MX:'MXN', ZA:'ZAR', PL:'PLN',
-    CZ:'CZK', HU:'HUF', IL:'ILS', KR:'KRW', IN:'INR', ID:'IDR', MY:'MYR', PH:'PHP',
-    TH:'THB', TR:'TRY', BR:'BRL', RO:'RON', IS:'ISK', BG:'BGN',
-    AT:'EUR', BE:'EUR', CY:'EUR', EE:'EUR', FI:'EUR', FR:'EUR', DE:'EUR', GR:'EUR',
-    IE:'EUR', IT:'EUR', LV:'EUR', LT:'EUR', LU:'EUR', MT:'EUR', NL:'EUR', PT:'EUR',
-    SK:'EUR', SI:'EUR', ES:'EUR', AD:'EUR', MC:'EUR', SM:'EUR', VA:'EUR', ME:'EUR', XK:'EUR'
-  };
-  const USD_STATIC_FALLBACK_RATE = 0.65; /* last-resort rate if all network calls fail */
-
-  window.geopolCurrency = {code:'AUD', rate:1, symbol:'$', ready:false};
-
-  window.formatPrice = function(aud){
-    const c = window.geopolCurrency;
-    const val = aud * (c.rate || 1);
-    const amt = NO_DECIMALS.indexOf(c.code) !== -1 ? Math.round(val).toString() : val.toFixed(2);
-    return c.code === 'AUD' ? `$${amt} AUD` : `${c.symbol}${amt} ${c.code} (est.)`;
-  };
-
-  function setAndBroadcast(data){
-    window.geopolCurrency = Object.assign({ready:true}, data);
-    window.dispatchEvent(new Event('geopolCurrencyReady'));
-  }
-
-  function cacheAndSet(data){
-    setAndBroadcast(data);
-    try{ sessionStorage.setItem(CUR_CACHE_KEY, JSON.stringify(data)); }catch(e){}
-  }
-
-  function fallbackUSD(){
-    return fetch('https://api.frankfurter.app/latest?from=AUD&to=USD')
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(rateData => {
-        const rate = rateData && rateData.rates && rateData.rates.USD;
-        if(!rate) throw new Error('no usd rate');
-        cacheAndSet({code:'USD', rate, symbol:'$'});
-      })
-      .catch(() => {
-        cacheAndSet({code:'USD', rate: USD_STATIC_FALLBACK_RATE, symbol:'$'});
-      });
-  }
-
-  try{
-    const cached = JSON.parse(sessionStorage.getItem(CUR_CACHE_KEY));
-    if(cached && cached.code && cached.rate){
-      setAndBroadcast(cached);
-      return;
-    }
-  }catch(e){}
-
-  fetch('https://ipwho.is/')
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(geo => {
-      if(!geo || !geo.success) throw new Error('geo lookup failed');
-      const cc = ((geo.country_code) ? geo.country_code : '').toUpperCase();
-      const code = COUNTRY_TO_CURRENCY[cc];
-      if(code === 'AUD'){
-        cacheAndSet({code:'AUD', rate:1, symbol:'$'});
-        return;
-      }
-      if(!code){
-        return fallbackUSD();
-      }
-      return fetch(`https://api.frankfurter.app/latest?from=AUD&to=${code}`)
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(rateData => {
-          const rate = rateData && rateData.rates && rateData.rates[code];
-          if(!rate) throw new Error('no rate');
-          cacheAndSet({code, rate, symbol: SYMBOLS[code] || (code + ' ')});
-        })
-        .catch(() => fallbackUSD());
-    })
-    .catch(() => fallbackUSD());
-})();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1122,7 +1038,7 @@
   <div class="details">
     <div class="title">CUI BONO T-SHIRT</div>
     <p class="desc">Cui bono. Boxy fit, 100% cotton. Printed front and back.</p>
-    <div class="price" id="mainPrice" data-aud="55.00">$55.00 AUD</div>
+    <div class="price">$39.99 USD</div>
 
     <div class="field-label">Sizes</div>
     <div class="sizes">
@@ -1183,7 +1099,7 @@
 
 <div class="mobile-cta-bar">
   <div class="mobile-cta-info">
-    <span class="mobile-cta-price" id="mobileCtaPrice" data-aud="55.00">$55.00 AUD</span>
+    <span class="mobile-cta-price">$39.99 USD</span>
     <span class="mobile-cta-size" id="mobileCtaSize">Size: S</span>
   </div>
   <button class="add-to-cart" type="button">Add to Cart</button>
@@ -1220,8 +1136,8 @@
     <div class="cart-empty">Your cart is empty</div>
   </div>
   <div class="cart-footer">
-    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0.00 AUD</span></div>
-    <div class="cart-note">Tax included. <a href="/shipping-policy/">Shipping</a> calculated at checkout.<span id="currencyDisclaimer"></span></div>
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0.00 USD</span></div>
+    <div class="cart-note">Tax included. <a href="/shipping-policy/">Shipping</a> calculated at checkout.</div>
     <button class="cart-checkout" type="button">Checkout</button>
     <a href="/cart-page/" class="cart-view" id="cartViewLink">View Cart</a>
   </div>
@@ -1370,7 +1286,7 @@
           <img src="${item.img}" alt="${item.title}">
           <div class="cart-item-info">
             <div class="cart-item-title">${item.title}</div>
-            <div class="cart-item-price">${window.formatPrice(item.price)}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)} USD</div>
             <div class="cart-item-meta">Size: ${item.size}</div>
             <div class="cart-item-qty-box">Quantity: <span class="cart-item-qty-value">${item.qty}</span></div>
           </div>
@@ -1390,7 +1306,7 @@
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
     cartHeading.textContent = `Your Cart (${totalItems} Item${totalItems !== 1 ? 's' : ''})`;
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    cartSubtotalEl.textContent = window.formatPrice(subtotal);
+    cartSubtotalEl.textContent = `$${subtotal.toFixed(2)} USD`;
     if(wordmarkCartBadge){
       wordmarkCartBadge.textContent = totalItems;
       wordmarkCartBadge.classList.toggle('visible', totalItems > 0);
@@ -1408,21 +1324,7 @@
     saveStoredCart();
   }
 
-  const mainPriceEl = document.getElementById('mainPrice');
-  const mobileCtaPriceEl = document.getElementById('mobileCtaPrice');
-  const currencyDisclaimerEl = document.getElementById('currencyDisclaimer');
-  function updatePriceDisplays(){
-    if(mainPriceEl) mainPriceEl.textContent = window.formatPrice(parseFloat(mainPriceEl.dataset.aud));
-    if(mobileCtaPriceEl) mobileCtaPriceEl.textContent = window.formatPrice(parseFloat(mobileCtaPriceEl.dataset.aud));
-    if(currencyDisclaimerEl){
-      currencyDisclaimerEl.textContent = window.geopolCurrency.code !== 'AUD'
-        ? ` Prices shown in ${window.geopolCurrency.code} are estimated — you'll be charged in AUD at checkout.`
-        : '';
-    }
-    renderCart();
-  }
-  updatePriceDisplays();
-  window.addEventListener('geopolCurrencyReady', updatePriceDisplays);
+  renderCart();
 
   document.getElementById('wordmarkCartBtn').addEventListener('click', ()=>{
     closeNav();
@@ -1439,7 +1341,7 @@
       } else {
         cart.push({
           title:'CUI BONO T-SHIRT',
-          price:55.00,
+          price:39.99,
           size,
           qty,
           img:'/tshirt_1023x1537.png'
