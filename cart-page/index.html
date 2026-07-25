@@ -11,6 +11,7 @@
   const SUPPORTED = ['USD','EUR','GBP','CAD','NZD','JPY','CHF','SEK','NOK','DKK','SGD','HKD','MXN','ZAR','PLN','CZK','HUF','ILS','KRW','INR','IDR','MYR','PHP','THB','TRY','BRL','RON','ISK','BGN'];
   const SYMBOLS = {USD:'$',EUR:'€',GBP:'£',CAD:'$',NZD:'$',JPY:'¥',CHF:'CHF ',SEK:'kr',NOK:'kr',DKK:'kr',SGD:'$',HKD:'$',MXN:'$',ZAR:'R',PLN:'zł',CZK:'Kč',HUF:'Ft',ILS:'₪',KRW:'₩',INR:'₹',IDR:'Rp',MYR:'RM',PHP:'₱',THB:'฿',TRY:'₺',BRL:'R$',RON:'lei',ISK:'kr',BGN:'лв',AUD:'$'};
   const NO_DECIMALS = ['JPY','KRW','HUF','ISK'];
+  const USD_STATIC_FALLBACK_RATE = 0.65; /* last-resort rate if all network calls fail */
 
   window.geopolCurrency = {code:'AUD', rate:1, symbol:'$', ready:false};
 
@@ -26,6 +27,24 @@
     window.dispatchEvent(new Event('geopolCurrencyReady'));
   }
 
+  function cacheAndSet(data){
+    setAndBroadcast(data);
+    try{ sessionStorage.setItem(CUR_CACHE_KEY, JSON.stringify(data)); }catch(e){}
+  }
+
+  function fallbackUSD(){
+    return fetch('https://api.frankfurter.app/latest?from=AUD&to=USD')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(rateData => {
+        const rate = rateData && rateData.rates && rateData.rates.USD;
+        if(!rate) throw new Error('no usd rate');
+        cacheAndSet({code:'USD', rate, symbol:'$'});
+      })
+      .catch(() => {
+        cacheAndSet({code:'USD', rate: USD_STATIC_FALLBACK_RATE, symbol:'$'});
+      });
+  }
+
   try{
     const cached = JSON.parse(sessionStorage.getItem(CUR_CACHE_KEY));
     if(cached && cached.code && cached.rate){
@@ -37,26 +56,24 @@
   fetch('https://ipapi.co/json/')
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(geo => {
-      const code = ((geo && geo.currency) ? geo.currency : 'AUD').toUpperCase();
-      if(code === 'AUD' || SUPPORTED.indexOf(code) === -1){
-        const data = {code:'AUD', rate:1, symbol:'$'};
-        setAndBroadcast(data);
-        try{ sessionStorage.setItem(CUR_CACHE_KEY, JSON.stringify(data)); }catch(e){}
+      const code = ((geo && geo.currency) ? geo.currency : '').toUpperCase();
+      if(code === 'AUD'){
+        cacheAndSet({code:'AUD', rate:1, symbol:'$'});
         return;
+      }
+      if(!code || SUPPORTED.indexOf(code) === -1){
+        return fallbackUSD();
       }
       return fetch(`https://api.frankfurter.app/latest?from=AUD&to=${code}`)
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(rateData => {
           const rate = rateData && rateData.rates && rateData.rates[code];
           if(!rate) throw new Error('no rate');
-          const data = {code, rate, symbol: SYMBOLS[code] || (code + ' ')};
-          setAndBroadcast(data);
-          try{ sessionStorage.setItem(CUR_CACHE_KEY, JSON.stringify(data)); }catch(e){}
-        });
+          cacheAndSet({code, rate, symbol: SYMBOLS[code] || (code + ' ')});
+        })
+        .catch(() => fallbackUSD());
     })
-    .catch(() => {
-      setAndBroadcast({code:'AUD', rate:1, symbol:'$'});
-    });
+    .catch(() => fallbackUSD());
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
