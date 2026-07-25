@@ -4,6 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CUI BONO T-SHIRT — GEOPOL.CLUB</title>
+<script>
+/* ---- IP-based currency display (estimate only; Shopify checkout always charges AUD) ---- */
+(function(){
+  const CUR_CACHE_KEY = 'geopolCurrencyV1';
+  const SUPPORTED = ['USD','EUR','GBP','CAD','NZD','JPY','CHF','SEK','NOK','DKK','SGD','HKD','MXN','ZAR','PLN','CZK','HUF','ILS','KRW','INR','IDR','MYR','PHP','THB','TRY','BRL','RON','ISK','BGN'];
+  const SYMBOLS = {USD:'$',EUR:'€',GBP:'£',CAD:'$',NZD:'$',JPY:'¥',CHF:'CHF ',SEK:'kr',NOK:'kr',DKK:'kr',SGD:'$',HKD:'$',MXN:'$',ZAR:'R',PLN:'zł',CZK:'Kč',HUF:'Ft',ILS:'₪',KRW:'₩',INR:'₹',IDR:'Rp',MYR:'RM',PHP:'₱',THB:'฿',TRY:'₺',BRL:'R$',RON:'lei',ISK:'kr',BGN:'лв',AUD:'$'};
+  const NO_DECIMALS = ['JPY','KRW','HUF','ISK'];
+
+  window.geopolCurrency = {code:'AUD', rate:1, symbol:'$', ready:false};
+
+  window.formatPrice = function(aud){
+    const c = window.geopolCurrency;
+    const val = aud * (c.rate || 1);
+    const amt = NO_DECIMALS.indexOf(c.code) !== -1 ? Math.round(val).toString() : val.toFixed(2);
+    return c.code === 'AUD' ? `$${amt} AUD` : `${c.symbol}${amt} ${c.code} (est.)`;
+  };
+
+  function setAndBroadcast(data){
+    window.geopolCurrency = Object.assign({ready:true}, data);
+    window.dispatchEvent(new Event('geopolCurrencyReady'));
+  }
+
+  try{
+    const cached = JSON.parse(sessionStorage.getItem(CUR_CACHE_KEY));
+    if(cached && cached.code && cached.rate){
+      setAndBroadcast(cached);
+      return;
+    }
+  }catch(e){}
+
+  fetch('https://ipapi.co/json/')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(geo => {
+      const code = ((geo && geo.currency) ? geo.currency : 'AUD').toUpperCase();
+      if(code === 'AUD' || SUPPORTED.indexOf(code) === -1){
+        const data = {code:'AUD', rate:1, symbol:'$'};
+        setAndBroadcast(data);
+        try{ sessionStorage.setItem(CUR_CACHE_KEY, JSON.stringify(data)); }catch(e){}
+        return;
+      }
+      return fetch(`https://api.frankfurter.app/latest?from=AUD&to=${code}`)
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(rateData => {
+          const rate = rateData && rateData.rates && rateData.rates[code];
+          if(!rate) throw new Error('no rate');
+          const data = {code, rate, symbol: SYMBOLS[code] || (code + ' ')};
+          setAndBroadcast(data);
+          try{ sessionStorage.setItem(CUR_CACHE_KEY, JSON.stringify(data)); }catch(e){}
+        });
+    })
+    .catch(() => {
+      setAndBroadcast({code:'AUD', rate:1, symbol:'$'});
+    });
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1038,7 +1093,7 @@
   <div class="details">
     <div class="title">CUI BONO T-SHIRT</div>
     <p class="desc">Cui bono. Boxy fit, 100% cotton. Printed front and back.</p>
-    <div class="price">$55.00 AUD</div>
+    <div class="price" id="mainPrice" data-aud="55.00">$55.00 AUD</div>
 
     <div class="field-label">Sizes</div>
     <div class="sizes">
@@ -1099,7 +1154,7 @@
 
 <div class="mobile-cta-bar">
   <div class="mobile-cta-info">
-    <span class="mobile-cta-price">$55.00 AUD</span>
+    <span class="mobile-cta-price" id="mobileCtaPrice" data-aud="55.00">$55.00 AUD</span>
     <span class="mobile-cta-size" id="mobileCtaSize">Size: S</span>
   </div>
   <button class="add-to-cart" type="button">Add to Cart</button>
@@ -1137,7 +1192,7 @@
   </div>
   <div class="cart-footer">
     <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0.00 AUD</span></div>
-    <div class="cart-note">Tax included. <a href="/shipping-policy/">Shipping</a> calculated at checkout.</div>
+    <div class="cart-note">Tax included. <a href="/shipping-policy/">Shipping</a> calculated at checkout.<span id="currencyDisclaimer"></span></div>
     <button class="cart-checkout" type="button">Checkout</button>
     <a href="/cart-page/" class="cart-view" id="cartViewLink">View Cart</a>
   </div>
@@ -1286,7 +1341,7 @@
           <img src="${item.img}" alt="${item.title}">
           <div class="cart-item-info">
             <div class="cart-item-title">${item.title}</div>
-            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+            <div class="cart-item-price">${window.formatPrice(item.price)}</div>
             <div class="cart-item-meta">Size: ${item.size}</div>
             <div class="cart-item-qty-box">Quantity: <span class="cart-item-qty-value">${item.qty}</span></div>
           </div>
@@ -1306,7 +1361,7 @@
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
     cartHeading.textContent = `Your Cart (${totalItems} Item${totalItems !== 1 ? 's' : ''})`;
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    cartSubtotalEl.textContent = `$${subtotal.toFixed(2)} AUD`;
+    cartSubtotalEl.textContent = window.formatPrice(subtotal);
     if(wordmarkCartBadge){
       wordmarkCartBadge.textContent = totalItems;
       wordmarkCartBadge.classList.toggle('visible', totalItems > 0);
@@ -1323,7 +1378,22 @@
     }
     saveStoredCart();
   }
-  renderCart();
+
+  const mainPriceEl = document.getElementById('mainPrice');
+  const mobileCtaPriceEl = document.getElementById('mobileCtaPrice');
+  const currencyDisclaimerEl = document.getElementById('currencyDisclaimer');
+  function updatePriceDisplays(){
+    if(mainPriceEl) mainPriceEl.textContent = window.formatPrice(parseFloat(mainPriceEl.dataset.aud));
+    if(mobileCtaPriceEl) mobileCtaPriceEl.textContent = window.formatPrice(parseFloat(mobileCtaPriceEl.dataset.aud));
+    if(currencyDisclaimerEl){
+      currencyDisclaimerEl.textContent = window.geopolCurrency.code !== 'AUD'
+        ? ` Prices shown in ${window.geopolCurrency.code} are estimated — you'll be charged in AUD at checkout.`
+        : '';
+    }
+    renderCart();
+  }
+  updatePriceDisplays();
+  window.addEventListener('geopolCurrencyReady', updatePriceDisplays);
 
   document.getElementById('wordmarkCartBtn').addEventListener('click', ()=>{
     closeNav();
