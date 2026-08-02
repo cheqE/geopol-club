@@ -10,6 +10,15 @@ a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,
 twq('config','tw-re5zo-re5zv');
 </script>
 <!-- End X Pixel base code -->
+<!-- Capture X click ID (twclid) from ad clicks so it can be forwarded through Shopify checkout -->
+<script>
+(function(){
+  var twclid = new URLSearchParams(window.location.search).get('twclid');
+  if (twclid) {
+    try { localStorage.setItem('geopol_twclid', twclid); } catch(e) {}
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GEOPOL.CLUB — MANIFESTO</title>
 <style>
