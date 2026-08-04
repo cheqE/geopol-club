@@ -757,9 +757,6 @@ twq('config','re5zo');
     letter-spacing:.08em;
   }
 
-  /* ---- Mobile sticky CTA bar ---- */
-  .mobile-cta-bar{display:none;}
-
   /* ==========================================================
      Mobile (<=640px) — designed for phones, not shrunk desktop
      ========================================================== */
@@ -863,7 +860,7 @@ twq('config','re5zo');
     }
 
     .details{
-      padding:28px 20px 92px;
+      padding:28px 20px 32px;
     }
     .title{font-size:19px;margin-bottom:10px;}
     .desc{font-size:11.5px;max-width:none;margin-bottom:20px;}
@@ -874,7 +871,6 @@ twq('config','re5zo');
     .qty button{width:40px;height:42px;font-size:16px;}
     .qty input{width:46px;height:42px;font-size:13px;}
 
-    .details > .add-to-cart{display:none;}
     .links{gap:10px;margin-top:4px;}
     .links a{font-size:11.5px;}
 
@@ -899,7 +895,6 @@ twq('config','re5zo');
 
     body{
       scroll-snap-type:y proximity;
-      padding-bottom:60px;
     }
 
     .lightbox{padding:20px;}
@@ -945,57 +940,6 @@ twq('config','re5zo');
     .cart-view{font-size:10.5px;}
 
     footer{padding:22px 20px;font-size:9px;}
-
-    .mobile-cta-bar{
-      display:flex;
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:rgba(255,255,255,.92);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      border-top:1px solid rgba(0,0,0,.06);
-      padding:9px 20px calc(9px + env(safe-area-inset-bottom));
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      z-index:900;
-      box-shadow:0 -8px 18px -16px rgba(0,0,0,.18);
-    }
-    .mobile-cta-info{
-      display:flex;
-      align-items:baseline;
-      gap:8px;
-      line-height:1;
-    }
-    .mobile-cta-price{
-      font-size:11.5px;
-      font-weight:700;
-      letter-spacing:.02em;
-      white-space:nowrap;
-    }
-    .mobile-cta-size{
-      font-size:9.5px;
-      font-weight:500;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      color:var(--muted);
-    }
-    .mobile-cta-bar .add-to-cart{
-      width:auto;
-      flex:0 0 auto;
-      max-width:none;
-      margin-bottom:0;
-      padding:8px 20px;
-      font-size:10px;
-      letter-spacing:.1em;
-      border-radius:2px;
-      transition:background .15s ease, transform .1s ease;
-    }
-    .mobile-cta-bar .add-to-cart:active{
-      transform:scale(.97);
-    }
   }
 </style>
 </head>
@@ -1121,14 +1065,6 @@ twq('config','re5zo');
 
   <img class="size-chart-svg" src="/TOD_logo_tshirt.webp" alt="Size chart: shoulder width, chest width, and body length measurements for sizes S through 2XL">
   <p class="size-chart-note">All measurements are done in inches/cm.</p>
-</div>
-
-<div class="mobile-cta-bar">
-  <div class="mobile-cta-info">
-    <span class="mobile-cta-price">$39.99 USD</span>
-    <span class="mobile-cta-size" id="mobileCtaSize">Size: S</span>
-  </div>
-  <button class="add-to-cart" type="button">Add to Cart</button>
 </div>
 
 <section class="statement">
